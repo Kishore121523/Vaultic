@@ -30,9 +30,9 @@ const authFormSchema = (formType: FormType) => {
 const AuthForm = ({type}: {type: FormType}) => {
   const [isLoading, setisLoading] = useState(false);
   const [errorMessage, seterrorMessage] = useState("");
-  const [accountId, setaccountId] = useState(null)
+  const [accountId, setaccountId] = useState(null);
 
-  const formSchema = authFormSchema(type)
+  const formSchema = authFormSchema(type);  
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,11 +47,11 @@ const AuthForm = ({type}: {type: FormType}) => {
     seterrorMessage("");
 
     try {
-      const user = 
+      const userAccountIdObject = 
         type === 'sign-up' ? await createAccount({fullName: values.fullName || "", email: values.email}) 
                           : await signInUser({email: values.email});  
-    
-      setaccountId(user.accountId);
+      
+      setaccountId(userAccountIdObject.accountId);
     } catch (error) {
       seterrorMessage("Failed to create account, please try again");
     } finally { 
