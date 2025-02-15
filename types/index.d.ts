@@ -35,6 +35,7 @@ export interface UpdateFileUsersProps {
   fileId: string;
   emails: string[];
   path: string;
+  method: string;
 }
 export interface DeleteFileProps {
   fileId: string;

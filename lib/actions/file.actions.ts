@@ -1,6 +1,10 @@
 "use server";
 
-import { RenameFileProps, UploadFileProps } from "@/types";
+import {
+  RenameFileProps,
+  UpdateFileUsersProps,
+  UploadFileProps,
+} from "@/types";
 import { createAdminClient } from "../appwrite";
 import { InputFile } from "node-appwrite/file";
 import { appwriteConfig } from "../appwrite/config";
@@ -124,5 +128,66 @@ export const renameFile = async ({
     return parseStringify(updatedFile);
   } catch (error) {
     handleError(error, "Failed to rename file");
+  }
+};
+
+export const updateFileUsers = async ({
+  fileId,
+  emails,
+  path,
+  method,
+}: UpdateFileUsersProps) => {
+  const { databases } = await createAdminClient();
+
+  try {
+    const file = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId
+    );
+
+    let updatedUsers = [];
+    method === "share"
+      ? (updatedUsers = Array.from(new Set([...file.users, ...emails])))
+      : (updatedUsers = file.users.filter((user: string) =>
+          emails.includes(user)
+        ));
+
+    const updatedFile = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId,
+      {
+        users: updatedUsers,
+      }
+    );
+
+    revalidatePath(path);
+    return parseStringify(updatedFile);
+  } catch (error) {
+    handleError(error, "Failed to update users");
+  }
+};
+
+export const getFileUsers = async ({
+  fileId,
+  path,
+}: {
+  fileId: string;
+  path: string;
+}) => {
+  const { databases } = await createAdminClient();
+
+  try {
+    const file = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.filesCollectionId,
+      fileId
+    );
+
+    revalidatePath(path);
+    return parseStringify(file.users);
+  } catch (error) {
+    handleError(error, "Failed to get file users");
   }
 };
