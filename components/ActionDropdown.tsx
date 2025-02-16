@@ -27,9 +27,10 @@ import Link from 'next/link';
 import { constructDownloadUrl } from '@/lib/utils';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { getFileUsers, renameFile, updateFileUsers } from '@/lib/actions/file.actions';
+import { deleteFile, getFileUsers, renameFile, updateFileUsers } from '@/lib/actions/file.actions';
 import { usePathname } from 'next/navigation';
 import { FileDetails, ShareInput } from './ActionsModelContent';
+import { getCurrentUser } from '@/lib/actions/user.actions';
 
 
 
@@ -40,8 +41,15 @@ const ActionDropdown = ({file}:{file:Models.Document}) => {
   const [isLoading, setisLoading] = useState(false);
   const [name, setname] = useState(file.name);
   const [emails, setEmails] = useState<string[]>([])
-
   const path = usePathname();
+
+  const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string>('');
+  
+  React.useEffect(() => {
+      getCurrentUser().then(loggedInUser => {
+        setLoggedInUserEmail(loggedInUser.email);
+      });
+    }, []);
 
   const closeAllModals = () => {
     setIsModalOpen(false);
@@ -67,9 +75,9 @@ const ActionDropdown = ({file}:{file:Models.Document}) => {
     let success = false;
 
     const actions = {
-      rename: () => renameFile({fileId: file.$id, name, extension:file.extension, path}),
+      rename: () => renameFile({fileId: file.$id, name, extension:file.extension, path}), 
       share: () => updateFileUsers({fileId: file.$id, emails, path, method:"share"}),
-      delete: () => console.log('delete'),
+      delete: () => deleteFile({fileId:file.$id, bucketFileId:file.bucketFileId, path}),
     }
 
     success = await actions[action.value as keyof typeof actions]();
@@ -97,27 +105,60 @@ const ActionDropdown = ({file}:{file:Models.Document}) => {
           {action.value === 'details' && <FileDetails file={file}/> }
 
           {action.value === 'share' && (
-            <ShareInput file={file} onInputChange={setEmails} onRemove={handleRemoveUser} />
+            <ShareInput file={file} loggedInUserEmail={loggedInUserEmail} onInputChange={setEmails} onRemove={handleRemoveUser} />
+          )}
+
+          {(action.value === 'delete' && file.owner.email === loggedInUserEmail) ? (
+            <p className='delete-confirmation'>Are you sure you want to delete{` `} 
+              <span className='delete-file-name'>{file.name}</span>?
+            </p>
+          ): (
+            <p className='delete-confirmation'>Contact the owner to delete{` `} 
+              <span className='delete-file-name'>{file.name}</span>
+              <span className='block mt-2 text-light-100 font-bold'>Owner: {file.owner.email}</span>
+            </p>
           )}
         </DialogHeader>
 
         {['rename', 'delete', 'share'].includes(action.value) && (
           <DialogFooter className='flex flex-col gap-3 md:flex-row'>
-            <Button onClick={closeAllModals} className='modal-cancel-button'>
-              Cancel
-            </Button>
-            <Button onClick={handleAction} className='modal-submit-button'>
-              <p className='capitalize'>{action.value}</p>
-              {isLoading && (
-                <Image 
-                  src="assets/icons/loader.svg" 
-                  alt="loader"
-                  width={24}
-                  height={24}
-                  className='animate-spin'
-                />
-              )}
-            </Button>
+            {action.value === 'delete' && file.owner.email !== loggedInUserEmail ? (
+              <>
+                  <Button onClick={closeAllModals} className='modal-submit-button'>
+                  Cancel
+                  </Button>
+                  {/* <Button onClick={handleAction} className='modal-submit-button'>
+                    <p className='capitalize'>{action.value}</p>
+                    {isLoading && (
+                      <Image 
+                        src="assets/icons/loader.svg" 
+                        alt="loader"
+                        width={24}
+                        height={24}
+                        className='animate-spin'
+                      />
+                    )}
+                    </Button> */}
+              </>
+            ) : (
+              <>
+                  <Button onClick={closeAllModals} className='modal-cancel-button'>
+                  Cancel
+                </Button>
+                <Button onClick={handleAction} className='modal-submit-button'>
+                  <p className='capitalize'>{action.value}</p>
+                  {isLoading && (
+                    <Image 
+                      src="assets/icons/loader.svg" 
+                      alt="loader"
+                      width={24}
+                      height={24}
+                      className='animate-spin'
+                    />
+                  )}
+                </Button>
+              </>
+            )}
           </DialogFooter>
         )}
       </DialogContent>

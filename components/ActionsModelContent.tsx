@@ -42,18 +42,12 @@ export const FileDetails = ({file}:{file:Models.Document}) => {
 
 interface Props{
   file: Models.Document;
+  loggedInUserEmail:string;
   onInputChange: React.Dispatch<React.SetStateAction<string[]>>;
   onRemove: (email:string) => void;
 }
 
-export const ShareInput = ({file, onInputChange, onRemove}: Props) => {
-  const [loggedInUserEmail, setLoggedInUserEmail] = React.useState<string>('');
-
-  React.useEffect(() => {
-    getCurrentUser().then(loggedInUser => {
-      setLoggedInUserEmail(loggedInUser.email);
-    });
-  }, []);
+export const ShareInput = ({file, loggedInUserEmail, onInputChange, onRemove}: Props) => {
   
   return (
     <>
