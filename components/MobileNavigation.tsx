@@ -9,13 +9,13 @@ import {
 } from "@/components/ui/sheet"
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import {Separator} from './ui/Separator'
 import { navItems } from '@/constants'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
 import FileUploader from './FileUploader'
 import { signOutUser } from '@/lib/actions/user.actions'
+import { Separator } from './ui/separator'
 
 interface Props {
   $id: string;
