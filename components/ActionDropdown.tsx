@@ -115,7 +115,7 @@ const ActionDropdown = ({file}:{file:Models.Document}) => {
           ): (
             <p className='delete-confirmation'>Contact the owner to delete{` `} 
               <span className='delete-file-name'>{file.name}</span>
-              <span className='block mt-2 text-light-100 font-bold'>Owner: {file.owner.email}</span>
+              <p className='font-bold mt-2'>Owner: <a href={`mailto:${file.owner.email}`}>{file.owner.email}</a></p>
             </p>
           )}
         </DialogHeader>
@@ -127,7 +127,7 @@ const ActionDropdown = ({file}:{file:Models.Document}) => {
                   <Button onClick={closeAllModals} className='modal-submit-button'>
                   Cancel
                   </Button>
-                  {/* <Button onClick={handleAction} className='modal-submit-button'>
+                    <Button onClick={handleAction} className='modal-submit-button' disabled>
                     <p className='capitalize'>{action.value}</p>
                     {isLoading && (
                       <Image 
@@ -138,7 +138,7 @@ const ActionDropdown = ({file}:{file:Models.Document}) => {
                         className='animate-spin'
                       />
                     )}
-                    </Button> */}
+                    </Button>
               </>
             ) : (
               <>

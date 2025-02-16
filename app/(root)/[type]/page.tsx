@@ -1,14 +1,19 @@
 import Card from '@/components/Card';
 import Sort from '@/components/Sort';
 import { getFiles } from '@/lib/actions/file.actions';
-import { SearchParamProps } from '@/types'
+import { getFileTypesParams } from '@/lib/utils';
+import { FileType, SearchParamProps } from '@/types'
 import { Models } from 'node-appwrite';
 import React from 'react'
 
-const page = async ({params}: SearchParamProps) => {
+const page = async ({searchParams, params}: SearchParamProps) => {
   const type = (await params)?.type as string || '';
+  const searchText = ((await searchParams)?.query as string) || '';
+  const sort = ((await searchParams)?.sort as string) || '';
+  
+  const types = getFileTypesParams(type) as FileType[];
 
-  const files = await getFiles();
+  const files = await getFiles({types, searchText, sort});
 
   return (
     <div className='page-container'>
@@ -24,6 +29,7 @@ const page = async ({params}: SearchParamProps) => {
             <p className="body-1 hidden sm:block text-light-200">Sort by:</p>
 
             <Sort />
+
           </div>
         </div>
       </section>
@@ -36,8 +42,6 @@ const page = async ({params}: SearchParamProps) => {
         </section>
       ):
       <p className='empty-list'>No files uploaded</p>}
-
-
     </div>
   )
 }
