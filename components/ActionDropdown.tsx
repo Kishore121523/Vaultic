@@ -39,7 +39,7 @@ const ActionDropdown = ({file}:{file:Models.Document}) => {
   const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const [action, setAction] = useState<ActionType | null>(null);
   const [isLoading, setisLoading] = useState(false);
-  const [name, setname] = useState(file.name);
+  const [name, setname] = useState(file.name.substring(0, file.name.lastIndexOf('.')));
   const [emails, setEmails] = useState<string[]>([])
   const path = usePathname();
 
@@ -94,13 +94,14 @@ const ActionDropdown = ({file}:{file:Models.Document}) => {
       <DialogContent className='shad-dialog button'>
         <DialogHeader className='flex flex-col gap-3'>
           <DialogTitle className='text-center text-light-100'>{action.label}</DialogTitle>
-          {action.value === 'rename' && (
+            {action.value === 'rename' && (
             <Input 
               type='text'
               value={name}
               onChange={(e) => setname(e.target.value)}
+              onFocus={() => setname(file.name.substring(0, file.name.lastIndexOf('.')))}
             />
-          )}
+            )}
 
           {action.value === 'details' && <FileDetails file={file}/> }
 
@@ -108,16 +109,17 @@ const ActionDropdown = ({file}:{file:Models.Document}) => {
             <ShareInput file={file} loggedInUserEmail={loggedInUserEmail} onInputChange={setEmails} onRemove={handleRemoveUser} />
           )}
 
-          {(action.value === 'delete' && file.owner.email === loggedInUserEmail) ? (
+          {action.value === 'delete' && file.owner.email === loggedInUserEmail ? (
             <p className='delete-confirmation'>Are you sure you want to delete{` `} 
               <span className='delete-file-name'>{file.name}</span>?
             </p>
-          ): (
-            <p className='delete-confirmation'>Contact the owner to delete{` `} 
-              <span className='delete-file-name'>{file.name}</span>
-              <p className='font-bold mt-2'>Owner: <a href={`mailto:${file.owner.email}`}>{file.owner.email}</a></p>
-            </p>
-          )}
+          ) : (action.value === 'delete' && file.owner.email !== loggedInUserEmail) ? (
+            <div className="">
+                <p className='delete-confirmation'>Contact the owner to delete{` `}
+                <span className='delete-file-name'>{file.name}</span></p>
+                <p className='font-bold mt-2 text-center'>Owner: <a href={`mailto:${file.owner.email}`}>{file.owner.email}</a></p>  
+            </div> 
+          ) : <></>}
         </DialogHeader>
 
         {['rename', 'delete', 'share'].includes(action.value) && (
