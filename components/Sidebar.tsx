@@ -33,7 +33,7 @@ const Sidebar = ({fullName, avatar, email}: Props) => {
           className='lg:hidden' />
       </Link>
 
-      <nav className='sidebar-nav'>
+      <nav className='sidebar-nav mb-3'>
         <ul className="flex flex-1 flex-col gap-6 lg:gap-4 2xl:gap-6">
           {navItems.map(({url, name, icon}) => {
             return (
@@ -59,7 +59,7 @@ const Sidebar = ({fullName, avatar, email}: Props) => {
         alt='logo' 
         width={506} 
         height={418} 
-        className='w-full' />
+        className='w-full mt-4' />
 
       <div className="sidebar-user-info">
         <Image 
