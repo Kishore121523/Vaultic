@@ -22,7 +22,7 @@ const Layout = ({children}: {children: React.ReactNode}) => {
       </section>
 
 
-      <section className="flex flex-1 flex-col items-center justify-center p-4 py-10 lg:flex-row lg:justify-center lg:p-10 lg:gap-[11rem]">
+      <section className="flex flex-1 flex-col items-center p-4 py-10 lg:flex-row lg:justify-center lg:p-10 lg:gap-[11rem]">
         <div className="hidden lg:flex">
           <Image 
             src="/assets/images/bg2.png" 

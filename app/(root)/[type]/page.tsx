@@ -4,9 +4,7 @@ import { getFiles, getTotalSpaceUsed } from '@/lib/actions/file.actions';
 import { convertFileSize, getFileTypesParams, getUsageSummary } from '@/lib/utils';
 import { FileType, SearchParamProps } from '@/types'
 import { Models } from 'node-appwrite';
-import React from 'react'
-
-
+import React from 'react';
 
 const page = async ({searchParams, params}: SearchParamProps) => {
 
