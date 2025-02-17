@@ -12,7 +12,7 @@ const Layout = ({children}: {children: React.ReactNode}) => {
             width={180} 
             height={65} 
             className="h-auto" 
-            alt="logo"
+            alt="Logo"
           />
 
             <h1 className="text-[23px] leading-[42px] font-bold text-center text-white">
