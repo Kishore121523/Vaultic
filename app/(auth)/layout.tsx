@@ -6,7 +6,7 @@ const Layout = ({children}: {children: React.ReactNode}) => {
   return (
     <div className="flex flex-col justify-center min-h-screen">
       <section className="w-full hidden items-center justify-center lg:flex lg:p-4 lg:pb-0">
-        <div className="bg-brand rounded-2xl p-10 shadow-lg w-full flex justify-between items-center">
+        <div className="bg-brand rounded-2xl p-4 shadow-lg w-full flex justify-between items-center">
           <Image 
             src="/assets/icons/logo-full.svg" 
             width={180} 
@@ -15,7 +15,7 @@ const Layout = ({children}: {children: React.ReactNode}) => {
             alt="logo"
           />
 
-            <h1 className="text-[30px] leading-[42px] font-bold text-center text-white">
+            <h1 className="text-[23px] leading-[42px] font-bold text-center text-white">
             Securely store and manage your files
             </h1>
         </div>
